@@ -13,11 +13,9 @@ class Bus:
     def getDistance(self, _from, _to):
         assert(self.isDirectReachable(_from, _to))
 
-        idx = 0
         idxFrom = 0
         idxTo = 0
-        while (idx < len(self.listStops)):
-            idx += 1
+        for idx in range(0, len(self.listStops)):
             if (self.listStops.id == _from.id):
                 idxFrom = idx
             if (self.listStops.id == _to.id):
