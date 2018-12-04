@@ -44,23 +44,40 @@ class Bus:
 
         return nearSwitch
 
-    def isStopOnTheLine(self, _stop = BusStop):
+    def isStopOnTheLine(self, _stop):
         for stop in self.listStops:
             if (stop.id == _stop.id):
                 return True
 
         return False
 
-    def isDirectReachable(self, _from = BusStop, _to = BusStop):
+    def isDirectReachable(self, _from, _to):
         if (self.isStopOnTheLine(_from) and self.isStopOnTheLine(_to)):
             return True
         else:
             return False
 
-    def isSwitchReachable(self, _to = BusStop):
-        # to perform a depth first search of connect bus lines and determine if _to is
-        # reachable through switch stops
-        pass
+    # to perform a depth first search of connect bus lines and determine if _to is
+    # reachable through switch stops
+    # @param _rootBus: the root search bus used to avoid endless recursive search
+    def isSwitchReachable(self, _to, _rootBus):
+        sw = self.getAllSwitchStops()
+        for stop in sw:
+            # listBus = stop.listBus
+            for bus in stop.listBus:
+                if bus == self or bus == _rootBus:
+                    continue # avoid self and root search
+
+                if (bus.isDirectReachable(_to)):
+                    return True
+                else:
+                    rsw = bus.getAllSwitchStops()
+                    for rstop in rsw:
+                        # do a recursive search
+                        if (rstop != self and rstop.isSwitchReachable(_to, _rootBus)):
+                            return True
+                
+        return False
 
     def getAllSwitchStops(self):
         listSwitchs = []
